@@ -4,3 +4,5 @@
 pub static JS: &[u8] = include_bytes!("searcher.js");
 pub static MARK_JS: &[u8] = include_bytes!("mark.min.js");
 pub static ELASTICLUNR_JS: &[u8] = include_bytes!("elasticlunr.min.js");
+pub static LUNR_STEM_JS: &[u8] = include_bytes!("lunr.stemmer.support.js");
+pub static LUNR_ZH_JS: &[u8] = include_bytes!("lunr.zh.js");

@@ -2,7 +2,7 @@ use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
-use elasticlunr::{Index, IndexBuilder};
+use elasticlunr::{lang::Chinese, Index, IndexBuilder};
 use once_cell::sync::Lazy;
 use pulldown_cmark::*;
 
@@ -16,7 +16,6 @@ use serde::Serialize;
 
 const MAX_WORD_LENGTH_TO_INDEX: usize = 80;
 
-/// Tokenizes in the same way as elasticlunr-rs (for English), but also drops long tokens.
 fn tokenize(text: &str) -> Vec<String> {
     text.split(|c: char| c.is_whitespace() || c == '-')
         .filter(|s| !s.is_empty())
@@ -27,7 +26,8 @@ fn tokenize(text: &str) -> Vec<String> {
 
 /// Creates all files required for search.
 pub fn create_files(search_config: &Search, destination: &Path, book: &Book) -> Result<()> {
-    let mut index = IndexBuilder::new()
+    // let mut index = IndexBuilder::new()
+    let mut index = IndexBuilder::with_language(Box::new(Chinese::new()))
         .add_field_with_tokenizer("title", Box::new(&tokenize))
         .add_field_with_tokenizer("body", Box::new(&tokenize))
         .add_field_with_tokenizer("breadcrumbs", Box::new(&tokenize))
@@ -55,6 +55,12 @@ pub fn create_files(search_config: &Search, destination: &Path, book: &Book) -> 
         utils::fs::write_file(destination, "searcher.js", searcher::JS)?;
         utils::fs::write_file(destination, "mark.min.js", searcher::MARK_JS)?;
         utils::fs::write_file(destination, "elasticlunr.min.js", searcher::ELASTICLUNR_JS)?;
+        utils::fs::write_file(
+            destination,
+            "lunr.stemmer.support.js",
+            searcher::LUNR_STEM_JS,
+        )?;
+        utils::fs::write_file(destination, "lunr.zh.js", searcher::LUNR_ZH_JS)?;
         debug!("Copying search files ✓");
     }
 

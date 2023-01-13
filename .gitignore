@@ -16,3 +16,7 @@ test_book/book/
 # Ignore Vim temporary and swap files.
 *.sw?
 *~
+
+# 忽略一些文件
+bookcn/
+*_.js
